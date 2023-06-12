@@ -1,9 +1,9 @@
 use super::{HalfEdge, Mesh};
-use std::iter::Iterator;
+use std::{collections::linked_list::IterMut, iter::Iterator};
 
 pub struct MeshTraverser<'a> {
     mesh: &'a Mesh,
-    current_edge: u32,
+    pub current_edge: u32,
 }
 
 impl<'a> Clone for MeshTraverser<'a> {
@@ -97,6 +97,20 @@ impl Mesh {
             start_edge,
             stop: false,
         }
+    }
+
+    pub fn face_inds(&self) -> impl Iterator<Item = impl Iterator<Item = u32> + '_> + '_ {
+        self.faces
+            .iter()
+            .enumerate()
+            .map(|(i, _face)| self.face_edges(i as u32).map(|edge| edge.origin))
+    }
+
+    pub fn tri_inds(&self) -> impl Iterator<Item = impl Iterator<Item = u32> + '_> + '_ {
+        self.faces
+            .iter()
+            .enumerate()
+            .map(|(i, _face)| self.face_edges(i as u32).map(|edge| edge.origin).take(3))
     }
 
     /// # gets iterator over half edges around a vertex

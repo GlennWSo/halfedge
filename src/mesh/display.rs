@@ -58,14 +58,14 @@ impl Vertex {
 }
 
 impl HalfEdge {
-    fn pretty_header() -> &'static str {
+    pub fn pretty_header() -> &'static str {
         "origin\ttwin\tface\tnext\tprev"
     }
 
-    fn pretty_data(&self) -> String {
+    pub fn pretty_data(&self) -> String {
         format!(
             "{}\t{}\t{}\t{}\t{}",
-            self.origin,
+            self.origin + 1,
             op_id2string(self.twin),
             op_id2string(self.face),
             self.next,

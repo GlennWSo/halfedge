@@ -42,30 +42,28 @@ impl Mesh {
         }
 
         {
-            let twin = &mut self.half_edges[edge_id as usize];
+            let twin = &mut self.half_edges[twin_id as usize];
             twin.next = twin_prev_id;
             twin.prev = next_id;
-            twin.origin = prev_origin;
+            twin.origin = dbg!(prev_origin);
         }
 
         {
             let next = &mut self.half_edges[next_id as usize];
             next.next = twin_id;
             next.prev = twin_prev_id;
-            next.face = Some(twin_face_id);
         }
 
         {
             let twin_next = &mut self.half_edges[twin_next_id as usize];
             twin_next.next = edge_id;
             twin_next.prev = prev_id;
-            twin_next.face = Some(face_id);
         }
 
         {
             let prev = &mut self.half_edges[prev_id as usize];
             prev.next = twin_next_id;
-            prev.prev = next_id;
+            prev.prev = edge_id;
         }
 
         {
