@@ -26,12 +26,13 @@ impl Mesh {
 
         {
             // ensure flipped edges is not used as insident edges
-            let face = &self.faces[face_id as usize];
-            face.set(next_id);
+            let face = &mut self.faces[face_id as usize];
+            // face.set(next_id);
+            *face = next_id;
         }
         {
-            let twin_face = &self.faces[twin_face_id as usize];
-            twin_face.set(twin_next_id);
+            let twin_face = &mut self.faces[twin_face_id as usize];
+            *twin_face = twin_next_id;
         }
 
         {

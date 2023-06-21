@@ -2,7 +2,6 @@ mod display;
 mod flip;
 mod traverse;
 
-use std::cell::Cell;
 // use std::fmt;
 use std::iter;
 
@@ -16,7 +15,7 @@ pub struct Vertex {
 }
 
 pub type Verts = Vec<Vertex>;
-pub type Faces = Vec<Cell<u32>>;
+pub type Faces = Vec<u32>;
 pub type HalfEdges = Vec<HalfEdge>;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -92,7 +91,7 @@ impl Mesh {
                 .collect();
 
             let n_edges = half_edges.len();
-            faces.push(Cell::new(n_edges as u32));
+            faces.push(n_edges as u32);
 
             let next_origins: Vec<u32> = half_edges
                 .iter()
