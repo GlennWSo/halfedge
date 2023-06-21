@@ -23,6 +23,21 @@
           cmake
         ];
 
+        
+        libPath = with pkgs; lib.makeLibraryPath [
+          libGL
+          xorg.libX11
+          xorg.libXcursor
+          xorg.libXi
+          xorg.libXrandr
+         ];    
+
+        cargo_script = pkgs.writeScriptBin "car" ''
+          echo running cargo with add modified LD_LIBRARY_PATH
+          export LD_LIBRARY_PATH=${libPath}
+          cargo "$@"
+        '';
+
         utils = with pkgs; [
           # checks video driver info
           pciutils 
@@ -32,22 +47,15 @@
           lldb
           rust-analyzer
           gitui
+          cargo_script
         ];
-        
-        libPath = with pkgs; lib.makeLibraryPath [
-          libGL
-          xorg.libX11
-          xorg.libXcursor
-          xorg.libXi
-          xorg.libXrandr
-         ];    
       in
       with pkgs;
       {
         devShells.default = mkShell {
           name = "rust graphics env"; 
           buildInputs = [rust] ++ deps ++ utils;
-          LD_LIBRARY_PATH=libPath;
+          # LD_LIBRARY_PATH=libPath;
           shellHook = ''
             echo Hello, Dev!
           '';

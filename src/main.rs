@@ -1,21 +1,24 @@
+use halfedge::plot::show_wireframes;
 use halfedge::Mesh;
+// use std::thread;
+// use three_d::CpuMesh;
 
 fn main() {
-    let points = vec![
-        [1.0, 4.0, 0.0],
-        [3.0, 4.0, 0.0],
-        [0.0, 2.0, 0.0],
-        [2.0, 2.0, 0.0],
-        [4.0, 2.0, 0.0],
-        [1.0, 0.0, 0.0],
-        [3.0, 0.0, 0.0],
-    ];
     // let points = vec![
-    //     [0.0, 1.0, 0.0],
-    //     [1.0, 1.0, 0.0],
+    //     [1.0, 4.0, 0.0],
+    //     [3.0, 4.0, 0.0],
     //     [0.0, 2.0, 0.0],
+    //     [2.0, 2.0, 0.0],
+    //     [4.0, 2.0, 0.0],
     //     [1.0, 0.0, 0.0],
+    //     [3.0, 0.0, 0.0],
     // ];
+    let points = vec![
+        [0.0, 1.0, 0.0],
+        [1.0, 1.0, 0.0],
+        [0.0, 0.0, 0.0],
+        [1.0, 0.0, 0.0],
+    ];
     let mut faces = vec![vec![1, 3, 4], vec![1, 4, 2]];
 
     // let mut faces = vec![
@@ -32,11 +35,16 @@ fn main() {
         }
     }
 
-    let mut hmesh = Mesh::from_verts_faces(points, faces);
-    // println!("{}", hmesh);
+    let mesh = Mesh::from_verts_faces(points, faces);
+    let mut mesh2 = mesh.clone();
+    mesh2.flip_edge(2);
+    // mesh.plot();
+    // show_wireframe(mesh.into());
+    show_wireframes(vec![mesh.into(), mesh2.into()]);
 
-    // println!("{}", hmesh.get_traverser(2).get_edge());
-    hmesh.flip_edge(3);
-    println!("{}", hmesh);
-    // println!("{}", hmesh.get_traverser(2).get_edge());
+    // println!("i never run");
+
+    // hmesh.flip_edge(2);
+    // println!("{}", hmesh);
+    // hmesh.plot();
 }

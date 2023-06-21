@@ -6,6 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-three-d = { version = "0.15.0", features=["egui-gui", "window"] }
+three-d = { git = "https://github.com/asny/three-d.git", rev = "afba8c4" , features=["egui-gui", "window" ] }
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 three-d-asset = {version="0.5",features = ["obj", "http"] }
+winit = "0.28.6"
