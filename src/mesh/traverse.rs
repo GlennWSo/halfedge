@@ -1,5 +1,5 @@
 use super::{HalfEdge, Mesh};
-use std::{collections::linked_list::IterMut, iter::Iterator};
+use std::iter::Iterator;
 
 pub struct MeshTraverser<'a> {
     mesh: &'a Mesh,

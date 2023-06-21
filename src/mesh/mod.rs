@@ -193,7 +193,6 @@ impl Mesh {
 
 #[cfg(test)]
 mod tests {
-    use std::collections::HashSet;
 
     use crate::{mesh::HalfEdge, Mesh};
 
