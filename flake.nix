@@ -18,7 +18,7 @@
         rust = pkgs.rust-bin.stable.latest.default;
         deps = with pkgs; [
           openssl
-          pkgconfig
+          pkg-config
           fontconfig
           cmake
         ];

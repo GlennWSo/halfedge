@@ -14,10 +14,10 @@ fn main() {
     //     [3.0, 0.0, 0.0],
     // ];
     let points = vec![
-        [0.0, 1.0, 0.0],
-        [1.0, 1.0, 0.0],
-        [0.0, 0.0, 0.0],
-        [1.0, 0.0, 0.0],
+        [0.0, 1.0, 0.0].into(),
+        [1.0, 1.0, 0.0].into(),
+        [0.0, 0.0, 0.0].into(),
+        [1.0, 0.0, 0.0].into(),
     ];
     let mut faces = vec![vec![1, 3, 4], vec![1, 4, 2]];
 
@@ -37,7 +37,9 @@ fn main() {
 
     let mesh = Mesh::from_verts_faces(points, faces);
     let mut mesh2 = mesh.clone();
-    mesh2.flip_edge(2);
+    // mesh2.flip_edge(2);
+    mesh2.split_edge(2);
+    println!("{}", mesh2);
     // mesh.plot();
     // show_wireframe(mesh.into());
     show_wireframes(vec![mesh.into(), mesh2.into()]);
