@@ -7,7 +7,7 @@
     flake-utils.url  = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, rust-overlay, flake-utils, ... }:
+  outputs = { self, nixpkgs, rust-overlay, flake-utils}:
     flake-utils.lib.eachDefaultSystem (system:
       let
         overlays = [ (import rust-overlay) ];
@@ -16,14 +16,8 @@
         };
 
         rust = pkgs.rust-bin.stable.latest.default;
-        deps = with pkgs; [
-          openssl
-          pkg-config
-          # fontconfig
-          # cmake
-        ];
         
-        libPath = with pkgs; lib.makeLibraryPath [
+        graphicLibs = with pkgs; lib.makeLibraryPath [
           libGL
           xorg.libX11
           xorg.libXcursor
@@ -33,22 +27,26 @@
 
         cargo_script = pkgs.writeScriptBin "cargo" ''
           echo running cargo with add modified LD_LIBRARY_PATH
-          export LD_LIBRARY_PATH=${libPath}
+          export LD_LIBRARY_PATH=${graphicLibs}
           export PATH=$PATH:${rust}/bin
           ${rust}/bin/cargo "$@"
         '';
 
+        buildDeps = with pkgs; [
+          openssl
+          pkg-config
+          cargo_script
+          rust
+        ];
+
         utils = with pkgs; [
-          # checks video driver info
+          #  video driver info
           pciutils 
           glxinfo
           nil
           gdb
           lldb
           rust-analyzer
-          gitui
-          cargo_script
-          rust
         ];
       in
       with pkgs;
@@ -56,9 +54,9 @@
         devShells.default = mkShell {
           name = "rust graphics env"; 
           DERP = rust;
-          buildInputs = deps ++ utils;
+          buildInputs = buildDeps ++ utils;
           shellHook = ''
-            echo Hello, Dev!
+            echo Hello, dev!
           '';
         };
       }
