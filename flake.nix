@@ -19,10 +19,9 @@
         deps = with pkgs; [
           openssl
           pkg-config
-          fontconfig
-          cmake
+          # fontconfig
+          # cmake
         ];
-
         
         libPath = with pkgs; lib.makeLibraryPath [
           libGL
