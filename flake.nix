@@ -32,10 +32,11 @@
           xorg.libXrandr
          ];    
 
-        cargo_script = pkgs.writeScriptBin "car" ''
+        cargo_script = pkgs.writeScriptBin "cargo" ''
           echo running cargo with add modified LD_LIBRARY_PATH
           export LD_LIBRARY_PATH=${libPath}
-          cargo "$@"
+          export PATH=$PATH:${rust}/bin
+          ${rust}/bin/cargo "$@"
         '';
 
         utils = with pkgs; [
@@ -48,14 +49,15 @@
           rust-analyzer
           gitui
           cargo_script
+          rust
         ];
       in
       with pkgs;
       {
         devShells.default = mkShell {
           name = "rust graphics env"; 
-          buildInputs = [rust] ++ deps ++ utils;
-          # LD_LIBRARY_PATH=libPath;
+          DERP = rust;
+          buildInputs = deps ++ utils;
           shellHook = ''
             echo Hello, Dev!
           '';
