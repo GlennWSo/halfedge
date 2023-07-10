@@ -39,7 +39,7 @@ impl Mesh {
             .faces
             .iter()
             .enumerate()
-            .map(|(i, face_edge)| format!("{}\t{}\n", i, face_edge.get()))
+            .map(|(i, face_edge)| format!("{}\t{}\n", i, face_edge))
             .collect();
         format!("{}\n{}", header, body)
     }

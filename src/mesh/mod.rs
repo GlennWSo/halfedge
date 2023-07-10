@@ -1,12 +1,78 @@
 mod display;
 mod flip;
+mod split;
 mod traverse;
 
-use std::cell::Cell;
 // use std::fmt;
-use std::iter;
+use std::{
+    iter,
+    ops::{Add, Div, Index},
+};
 
-type Point = [f64; 3];
+// type Point = [f64; 3];
+
+#[derive(Debug, Copy, Clone)]
+pub struct Point {
+    pub x: f64,
+    pub y: f64,
+    pub z: f64,
+}
+
+impl Add<f64> for Point {
+    type Output = Point;
+    fn add(self, rhs: f64) -> Self::Output {
+        Self {
+            x: self.x + rhs,
+            y: self.y + rhs,
+            z: self.z + rhs,
+        }
+    }
+}
+impl Add<Point> for Point {
+    type Output = Point;
+    fn add(self, rhs: Point) -> Self::Output {
+        Self {
+            x: self.x + rhs.x,
+            y: self.y + rhs.y,
+            z: self.z + rhs.z,
+        }
+    }
+}
+
+impl Div<f64> for Point {
+    type Output = Point;
+    fn div(self, rhs: f64) -> Self::Output {
+        Self {
+            x: self.x / rhs,
+            y: self.y / rhs,
+            z: self.z / rhs,
+        }
+    }
+}
+
+impl Index<usize> for Point {
+    type Output = f64;
+
+    fn index(&self, index: usize) -> &Self::Output {
+        match index {
+            0 => &self.x,
+            1 => &self.y,
+            2 => &self.z,
+            _ => panic!("max index ==2"),
+        }
+    }
+}
+
+impl From<[f64; 3]> for Point {
+    fn from(value: [f64; 3]) -> Self {
+        Self {
+            x: value[0],
+            y: value[1],
+            z: value[2],
+        }
+    }
+}
+
 type FaceList = Vec<Vec<u32>>;
 
 #[derive(Debug, Clone)]
@@ -16,7 +82,7 @@ pub struct Vertex {
 }
 
 pub type Verts = Vec<Vertex>;
-pub type Faces = Vec<Cell<u32>>;
+pub type Faces = Vec<u32>;
 pub type HalfEdges = Vec<HalfEdge>;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -26,6 +92,18 @@ pub struct HalfEdge {
     face: Option<u32>,
     next: u32,
     prev: u32,
+}
+
+impl HalfEdge {
+    pub fn new(origin: u32, twin: Option<u32>, face: Option<u32>, next: u32, prev: u32) -> Self {
+        Self {
+            origin,
+            twin,
+            face,
+            next,
+            prev,
+        }
+    }
 }
 
 impl From<[u32; 5]> for HalfEdge {
@@ -92,7 +170,7 @@ impl Mesh {
                 .collect();
 
             let n_edges = half_edges.len();
-            faces.push(Cell::new(n_edges as u32));
+            faces.push(n_edges as u32);
 
             let next_origins: Vec<u32> = half_edges
                 .iter()
@@ -198,10 +276,10 @@ mod tests {
 
     fn square() -> Mesh {
         let points = vec![
-            [0.0, 1.0, 0.0],
-            [1.0, 1.0, 0.0],
-            [0.0, 0.0, 0.0],
-            [1.0, 0.0, 0.0],
+            [0.0, 1.0, 0.0].into(),
+            [1.0, 1.0, 0.0].into(),
+            [0.0, 0.0, 0.0].into(),
+            [1.0, 0.0, 0.0].into(),
         ];
         let faces = vec![vec![0, 2, 3], vec![0, 3, 1]];
         Mesh::from_verts_faces(points, faces)

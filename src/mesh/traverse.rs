@@ -90,7 +90,7 @@ impl Mesh {
 
     /// # gets iterator over half edges around a face
     pub fn face_edges(&self, face: u32) -> FaceEdgesIter {
-        let start_edge = self.faces[face as usize].get();
+        let start_edge = self.faces[face as usize];
         let traverser = self.get_traverser(start_edge);
         FaceEdgesIter {
             traverser,

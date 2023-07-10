@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::Mesh;
+use crate::{Mesh, Point};
 // use std::collections::HashMap;
 use three_d::{renderer::*, FrameInputGenerator, Mesh as GPUMesh, WindowedContext};
 use winit::{
@@ -80,6 +80,12 @@ impl WireFrame {
             edges,
             vertices,
         }
+    }
+}
+
+impl Into<Vector3<f64>> for Point {
+    fn into(self) -> Vector3<f64> {
+        Vector3::new(self.x, self.y, self.z)
     }
 }
 
