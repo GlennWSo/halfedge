@@ -106,6 +106,10 @@ impl Mesh {
             .map(|(i, _face)| self.face_edges(i as u32).map(|edge| edge.origin))
     }
 
+    pub fn face_edge_count(&self) -> impl Iterator<Item = usize> + '_ {
+        self.face_inds().map(|edge_iter| edge_iter.count())
+    }
+
     pub fn tri_inds(&self) -> impl Iterator<Item = impl Iterator<Item = u32> + '_> + '_ {
         self.faces
             .iter()

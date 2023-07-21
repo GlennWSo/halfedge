@@ -2,6 +2,7 @@ mod display;
 mod flip;
 mod split;
 mod traverse;
+mod tri;
 
 // use std::fmt;
 use std::{
