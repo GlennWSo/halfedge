@@ -1,5 +1,6 @@
 mod display;
 mod flip;
+mod primative;
 mod split;
 mod traverse;
 mod tri;
