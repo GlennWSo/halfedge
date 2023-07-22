@@ -1,81 +1,17 @@
 mod display;
 mod flip;
+mod plane;
+mod point;
 mod primative;
 mod split;
 mod traverse;
 mod tri;
 
 // use std::fmt;
-use std::{
-    iter,
-    ops::{Add, Div, Index},
-};
+pub use point::Point;
+use std::iter;
 
 // type Point = [f64; 3];
-
-#[derive(Debug, Copy, Clone)]
-pub struct Point {
-    pub x: f64,
-    pub y: f64,
-    pub z: f64,
-}
-
-impl Add<f64> for Point {
-    type Output = Point;
-    fn add(self, rhs: f64) -> Self::Output {
-        Self {
-            x: self.x + rhs,
-            y: self.y + rhs,
-            z: self.z + rhs,
-        }
-    }
-}
-impl Add<Point> for Point {
-    type Output = Point;
-    fn add(self, rhs: Point) -> Self::Output {
-        Self {
-            x: self.x + rhs.x,
-            y: self.y + rhs.y,
-            z: self.z + rhs.z,
-        }
-    }
-}
-
-impl Div<f64> for Point {
-    type Output = Point;
-    fn div(self, rhs: f64) -> Self::Output {
-        Self {
-            x: self.x / rhs,
-            y: self.y / rhs,
-            z: self.z / rhs,
-        }
-    }
-}
-
-impl Index<usize> for Point {
-    type Output = f64;
-
-    fn index(&self, index: usize) -> &Self::Output {
-        match index {
-            0 => &self.x,
-            1 => &self.y,
-            2 => &self.z,
-            _ => panic!("max index ==2"),
-        }
-    }
-}
-
-impl From<[f64; 3]> for Point {
-    fn from(value: [f64; 3]) -> Self {
-        Self {
-            x: value[0],
-            y: value[1],
-            z: value[2],
-        }
-    }
-}
-
-type FaceList = Vec<Vec<u32>>;
 
 #[derive(Debug, Clone)]
 pub struct Vertex {
@@ -86,6 +22,7 @@ pub struct Vertex {
 pub type Verts = Vec<Vertex>;
 pub type Faces = Vec<u32>;
 pub type HalfEdges = Vec<HalfEdge>;
+type FaceList = Vec<Vec<u32>>;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct HalfEdge {
