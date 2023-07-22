@@ -103,6 +103,17 @@ impl Sub<Point> for Point {
     }
 }
 
+impl Mul<f64> for Point {
+    type Output = Point;
+
+    fn mul(self, rhs: f64) -> Self::Output {
+        Self {
+            x: self.x * rhs,
+            y: self.y * rhs,
+            z: self.z * rhs,
+        }
+    }
+}
 impl Mul<Point> for Point {
     type Output = Point;
 
