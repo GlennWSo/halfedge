@@ -55,7 +55,13 @@ impl Mesh {
         let pp_edge = &mut self.half_edges[pp_id as usize];
         pp_edge.next = new_twin_id;
     }
-    pub fn concave_triangulate(&mut self, face: u32) {
+    pub fn concave_triangulate(&mut self) {
+        let n_faces = self.faces.len() as u32;
+        for i in 0..n_faces {
+            self.concave_triangulate_face(i);
+        }
+    }
+    pub fn concave_triangulate_face(&mut self, face: u32) {
         let mut travler = self.get_traverser(self.faces[face as usize]);
         let start_id = travler.get_id();
         travler.next().next().next();
@@ -75,7 +81,6 @@ mod tests {
     use std::{assert_eq, vec};
 
     use super::Mesh;
-    use crate::plot::show_wireframe;
 
     /// mesh with a single face that have 5 edges
     fn pentagon() -> Mesh {
@@ -98,7 +103,7 @@ mod tests {
     fn test_concave_triangulate_pentagon() {
         let mut mesh = pentagon();
         println!("pre: {}", mesh);
-        mesh.concave_triangulate(0);
+        mesh.concave_triangulate();
         println!("post: {}", mesh);
         let expected: Vec<usize> = vec![3, 3, 3];
         let res: Vec<_> = mesh.face_edge_count().collect();
