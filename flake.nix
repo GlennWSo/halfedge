@@ -26,7 +26,6 @@
          ];    
 
         cargo_script = pkgs.writeScriptBin "car" ''
-          echo running cargo with add modified LD_LIBRARY_PATH
           export LD_LIBRARY_PATH=${graphicLibs}
           export PATH=$PATH:${rust}/bin
           ${rust}/bin/cargo "$@"
@@ -57,6 +56,8 @@
           buildInputs = buildDeps ++ utils;
           shellHook = ''
             echo Entering rust env!
+            echo 'use "car" to run cargo with: LD_LIBRARY_PATH+='
+            echo "    ${graphicLibs}" | sed 's/:/\n    /g'
           '';
         };
       }
