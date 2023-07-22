@@ -26,7 +26,7 @@
          ];    
 
         cargo_script = pkgs.writeScriptBin "car" ''
-          export LD_LIBRARY_PATH=${graphicLibs}
+          export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${graphicLibs}
           export PATH=$PATH:${rust}/bin
           ${rust}/bin/cargo "$@"
         '';
