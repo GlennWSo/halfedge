@@ -1,5 +1,4 @@
 use super::Mesh;
-use super::Point;
 
 impl Mesh {
     pub fn unit_cube() -> Self {
