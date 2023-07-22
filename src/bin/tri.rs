@@ -17,7 +17,7 @@ fn pentagon() -> Mesh {
 fn main() {
     let mut mesh = pentagon();
     println!("pre{}", mesh);
-    mesh.concave_triangulate(0);
+    mesh.concave_triangulate();
     println!("post{}", mesh);
     let tris: Vec<Vec<u32>> = mesh.tri_inds().map(|iter| iter.collect()).collect();
     println!("tri {:?}", tris);
