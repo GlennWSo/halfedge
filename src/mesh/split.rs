@@ -1,7 +1,18 @@
-use super::{HalfEdge, Mesh, Vertex};
+use super::{HalfEdge, Mesh, Point, Vertex};
 
 impl Mesh {
-    pub fn split_edge(&mut self, edge_id: u32) {
+    /// split_edge with mid point
+    pub fn divide_edge(&mut self, edge_id: u32) {
+        let mut travler = self.get_traverser(edge_id);
+        let id1 = travler.get_edge().origin;
+        let p1 = self.verts[id1 as usize].coord;
+        travler.next();
+        let id2 = travler.get_edge().origin;
+        let p2 = self.verts[id2 as usize].coord;
+        let mid = (p1 + p2) / 2.0;
+        self.split_edge(edge_id, mid);
+    }
+    pub fn split_edge(&mut self, edge_id: u32, coord: Point) {
         // get all effected ids
         let travler = self.get_traverser(edge_id);
         let mut twin_travler = travler.clone();
@@ -18,17 +29,11 @@ impl Mesh {
 
         let edge = &self.half_edges[edge_id as usize];
         let twin = &self.half_edges[twin_id as usize];
-        let origin_id = edge.origin;
-        let twin_origin_id = twin.origin;
 
         // create split point
-        let new_point = {
-            let p1 = &self.verts[origin_id as usize];
-            let p2 = &self.verts[twin_origin_id as usize];
-            Vertex {
-                coord: p1.coord / 2.0 + p2.coord / 2.0,
-                half_edge: new_edge_id,
-            }
+        let new_point = Vertex {
+            coord,
+            half_edge: new_edge_id,
         };
         self.verts.push(new_point);
 
