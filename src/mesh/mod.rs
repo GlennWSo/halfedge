@@ -64,7 +64,7 @@ impl From<[u32; 5]> for HalfEdge {
 
 #[derive(Clone, Debug)]
 pub struct Mesh {
-    verts: Verts,
+    pub verts: Verts, // TODO make private
     faces: Faces,
     half_edges: HalfEdges,
 }
