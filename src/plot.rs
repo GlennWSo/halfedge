@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 
-use crate::{Mesh, Point};
+use crate::{Coord, Mesh};
 // use std::collections::HashMap;
-use three_d::{renderer::*, FrameInputGenerator, Mesh as GPUMesh, WindowedContext};
+use three_d::{renderer::*, FrameInputGenerator, Mesh as GPUMesh, Srgba as Color, WindowedContext};
 use winit::{
     self,
     // event_loop::EventLoop,
@@ -83,7 +83,7 @@ impl WireFrame {
     }
 }
 
-impl Into<Vector3<f64>> for Point {
+impl Into<Vector3<f64>> for Coord {
     fn into(self) -> Vector3<f64> {
         Vector3::new(self.x, self.y, self.z)
     }

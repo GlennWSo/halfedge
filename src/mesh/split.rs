@@ -1,4 +1,4 @@
-use super::{HalfEdge, Mesh, Point, Vertex};
+use super::{Coord, HalfEdge, Mesh, Vertex};
 
 impl Mesh {
     /// split_edge with mid point
@@ -12,7 +12,7 @@ impl Mesh {
         let mid = (p1 + p2) / 2.0;
         self.split_edge(edge_id, mid);
     }
-    pub fn split_edge(&mut self, edge_id: u32, coord: Point) {
+    pub fn split_edge(&mut self, edge_id: u32, coord: Coord) {
         // get all effected ids
         let travler = self.get_traverser(edge_id);
         let mut twin_travler = travler.clone();

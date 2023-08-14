@@ -1,6 +1,16 @@
 use super::Mesh;
 
 impl Mesh {
+    pub fn unit_triangle() -> Self {
+        let points = vec![
+            [0.0, 0.0, 0.0].into(),
+            [1.0, 0.0, 0.0].into(),
+            [1.0, 1.0, 0.0].into(),
+        ];
+        let faces = vec![vec![0, 1, 2]];
+        Mesh::from_verts_faces(points, faces)
+    }
+
     pub fn unit_cube() -> Self {
         let points = vec![
             [0.0, 0.0, 0.0].into(),

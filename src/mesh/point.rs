@@ -1,17 +1,17 @@
 use std::ops::{Add, Div, Index, Mul, Sub};
 
-#[derive(Debug, Copy, Clone)]
-pub struct Point {
+#[derive(Debug, Copy, Clone, PartialEq)]
+pub struct Coord {
     pub x: f64,
     pub y: f64,
     pub z: f64,
 }
 
 pub struct PointIter {
-    point: Point,
+    point: Coord,
     index: u8,
 }
-impl From<[f64; 3]> for Point {
+impl From<[f64; 3]> for Coord {
     fn from(value: [f64; 3]) -> Self {
         Self {
             x: value[0],
@@ -21,7 +21,7 @@ impl From<[f64; 3]> for Point {
     }
 }
 
-impl Into<[f64; 3]> for Point {
+impl Into<[f64; 3]> for Coord {
     fn into(self) -> [f64; 3] {
         [self.x, self.y, self.z]
     }
@@ -48,7 +48,7 @@ impl Iterator for PointIter {
         }
     }
 }
-impl IntoIterator for Point {
+impl IntoIterator for Coord {
     type Item = f64;
     type IntoIter = std::array::IntoIter<f64, 3>;
 
@@ -57,13 +57,18 @@ impl IntoIterator for Point {
     }
 }
 
-impl<'a> Point {
+impl<'a> Coord {
     pub fn iter(&'a self) -> std::array::IntoIter<&'a f64, 3> {
         self.into_iter()
     }
+
+    pub fn dot(self, rhs: Coord) -> f64 {
+        let prod = self * rhs;
+        prod.into_iter().sum()
+    }
 }
 
-impl<'a> IntoIterator for &'a Point {
+impl<'a> IntoIterator for &'a Coord {
     type Item = &'a f64;
     type IntoIter = std::array::IntoIter<Self::Item, 3>;
 
@@ -72,8 +77,8 @@ impl<'a> IntoIterator for &'a Point {
     }
 }
 
-impl Add<f64> for Point {
-    type Output = Point;
+impl Add<f64> for Coord {
+    type Output = Coord;
     fn add(self, rhs: f64) -> Self::Output {
         Self {
             x: self.x + rhs,
@@ -82,9 +87,9 @@ impl Add<f64> for Point {
         }
     }
 }
-impl Add<Point> for Point {
-    type Output = Point;
-    fn add(self, rhs: Point) -> Self::Output {
+impl Add<Coord> for Coord {
+    type Output = Coord;
+    fn add(self, rhs: Coord) -> Self::Output {
         Self {
             x: self.x + rhs.x,
             y: self.y + rhs.y,
@@ -92,19 +97,19 @@ impl Add<Point> for Point {
         }
     }
 }
-impl Sub<Point> for Point {
-    type Output = Point;
-    fn sub(self, rhs: Point) -> Self::Output {
+impl Sub<Coord> for Coord {
+    type Output = Coord;
+    fn sub(self, rhs: Coord) -> Self::Output {
         Self {
-            x: self.x + rhs.x,
-            y: self.y + rhs.y,
-            z: self.z + rhs.z,
+            x: self.x - rhs.x,
+            y: self.y - rhs.y,
+            z: self.z - rhs.z,
         }
     }
 }
 
-impl Mul<f64> for Point {
-    type Output = Point;
+impl Mul<f64> for Coord {
+    type Output = Coord;
 
     fn mul(self, rhs: f64) -> Self::Output {
         Self {
@@ -114,10 +119,10 @@ impl Mul<f64> for Point {
         }
     }
 }
-impl Mul<Point> for Point {
-    type Output = Point;
+impl Mul<Coord> for Coord {
+    type Output = Coord;
 
-    fn mul(self, rhs: Point) -> Self::Output {
+    fn mul(self, rhs: Coord) -> Self::Output {
         Self {
             x: self.x * rhs.x,
             y: self.y * rhs.y,
@@ -126,8 +131,8 @@ impl Mul<Point> for Point {
     }
 }
 
-impl Div<f64> for Point {
-    type Output = Point;
+impl Div<f64> for Coord {
+    type Output = Coord;
     fn div(self, rhs: f64) -> Self::Output {
         Self {
             x: self.x / rhs,
@@ -137,7 +142,7 @@ impl Div<f64> for Point {
     }
 }
 
-impl Index<usize> for Point {
+impl Index<usize> for Coord {
     type Output = f64;
 
     fn index(&self, index: usize) -> &Self::Output {
