@@ -25,6 +25,13 @@
           xorg.libXrandr
          ];    
 
+        bacon = pkgs.bacon;
+
+        bacon_script = pkgs.writeScriptBin "bac" ''
+          export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${graphicLibs}
+          ${bacon}/bin/bacon "$@"
+        '';
+        
         cargo_script = pkgs.writeScriptBin "car" ''
           export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${graphicLibs}
           export PATH=$PATH:${rust}/bin
@@ -35,6 +42,7 @@
           openssl
           pkg-config
           cargo_script
+          bacon_script
           rust
         ];
 
@@ -52,11 +60,10 @@
       {
         devShells.default = mkShell {
           name = "rust graphics env"; 
-          DERP = rust;
           buildInputs = buildDeps ++ utils;
           shellHook = ''
             echo Entering rust env!
-            echo 'use "car" to run cargo with: LD_LIBRARY_PATH+='
+            echo 'use "car" or "bac" to run cargo or bacon with: LD_LIBRARY_PATH='
             echo "    ${graphicLibs}" | sed 's/:/\n    /g'
           '';
         };
