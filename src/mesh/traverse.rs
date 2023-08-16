@@ -1,3 +1,5 @@
+use crate::Coord;
+
 use super::{HalfEdge, Mesh};
 use std::iter::Iterator;
 
@@ -115,6 +117,11 @@ impl Mesh {
             .iter()
             .enumerate()
             .map(|(i, _face)| self.face_edges(i as u32).map(|edge| edge.origin).take(3))
+    }
+
+    pub fn tri_coords(&self) -> impl Iterator<Item = impl Iterator<Item = Coord> + '_> + '_ {
+        self.tri_inds()
+            .map(|tri_i| tri_i.map(|i| self.verts[i as usize].coord))
     }
 
     /// # gets iterator over half edges around a vertex

@@ -66,6 +66,17 @@ impl<'a> Coord {
         let prod = self * rhs;
         prod.into_iter().sum()
     }
+
+    pub fn norm(self) -> f64 {
+        self.dot(self).sqrt()
+    }
+
+    /// normalize inplace and return the norm
+    pub fn normalize(&mut self) -> f64 {
+        let norm = self.norm();
+        self / norm;
+        norm
+    }
 }
 
 impl<'a> IntoIterator for &'a Coord {
@@ -131,6 +142,15 @@ impl Mul<Coord> for Coord {
     }
 }
 
+impl Div<f64> for &mut Coord {
+    type Output = ();
+
+    fn div(self, rhs: f64) -> Self::Output {
+        self.x /= rhs;
+        self.y /= rhs;
+        self.z /= rhs;
+    }
+}
 impl Div<f64> for Coord {
     type Output = Coord;
     fn div(self, rhs: f64) -> Self::Output {

@@ -1,10 +1,9 @@
-use core::panic;
-
-use crate::Coord;
+use crate::{Coord, Mesh};
 
 pub struct Plane {
     origin: Coord,
     normal: Coord,
+    d0: f64,
 }
 
 type LocalVertex = u32;
@@ -29,13 +28,12 @@ pub enum TriIntersection {
 
 impl Plane {
     pub fn new(origin: Coord, normal: Coord) -> Plane {
-        Plane { origin, normal }
+        let d0 = normal.dot(origin);
+        Plane { origin, normal, d0 }
     }
     /// assumes self.normal is normalized
     pub fn dist(&self, p: Coord) -> f64 {
-        let prod = self.normal * p;
-        let diff = prod - self.origin;
-        diff.iter().sum()
+        self.normal.dot(p) - self.d0
     }
 
     /// assumes l.dot(self.normal) != 0
@@ -150,9 +148,36 @@ impl Plane {
     }
 }
 
+impl Mesh {
+    pub fn split_plane(&mut self, plane: Plane) {
+        for mut coords in self.tri_coords() {
+            let tri = [
+                coords.next().unwrap(),
+                coords.next().unwrap(),
+                coords.next().unwrap(),
+            ];
+            let res = plane.tri_intersect(tri);
+            println!("{:?}", tri);
+            println!("{:?}", res);
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::{EdgeIntersection, Plane, TriIntersection};
+
+    #[test]
+    fn test_dist() {
+        let plane_origin = [0.5, 0.5, 0.5];
+        let z_axis = [0.0, 0.0, 1.0];
+        let plane = Plane::new(plane_origin.into(), z_axis.into());
+
+        let co = [0.0, 0.0, 0.0];
+        let res = plane.dist(co.into());
+        let expected = -0.5;
+        assert_eq!(res, expected);
+    }
 
     #[test]
     fn test_tri_intersect() {
