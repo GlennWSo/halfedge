@@ -59,6 +59,7 @@ impl<'a> Iterator for FaceEdgesIter<'a> {
         return Some(&self.traverser.get_edge());
     }
 }
+
 pub struct VertexEdgesIter<'a> {
     traverser: MeshTraverser<'a>,
     start_edge: u32,
@@ -112,14 +113,18 @@ impl Mesh {
         self.face_inds().map(|edge_iter| edge_iter.count())
     }
 
-    pub fn tri_inds(&self) -> impl Iterator<Item = impl Iterator<Item = u32> + '_> + '_ {
-        self.faces
-            .iter()
-            .enumerate()
-            .map(|(i, _face)| self.face_edges(i as u32).map(|edge| edge.origin).take(3))
+    pub fn tri_inds(&self) -> impl Iterator<Item = [u32; 3]> + '_ {
+        self.faces.iter().enumerate().map(|(i, _face)| {
+            let mut inds_iter = self.face_edges(i as u32).map(|edge| edge.origin).take(3);
+            [
+                inds_iter.next().expect("atleast 3 vertex per face"),
+                inds_iter.next().expect("atleast 3 vertex per face"),
+                inds_iter.next().expect("atleast 3 vertex per face"),
+            ]
+        })
     }
 
-    pub fn tri_coords(&self) -> impl Iterator<Item = impl Iterator<Item = Coord> + '_> + '_ {
+    pub fn tri_coords(&self) -> impl Iterator<Item = [Coord; 3]> + '_ {
         self.tri_inds()
             .map(|tri_i| tri_i.map(|i| self.verts[i as usize].coord))
     }
