@@ -1,4 +1,7 @@
-use crate::{Coord, Mesh};
+use crate::{
+    mesh::{traverse, HalfEdge},
+    Coord, Mesh,
+};
 
 pub struct Plane {
     origin: Coord,
@@ -14,6 +17,17 @@ type LocalEdge = [LocalVertex; 2];
 pub struct EdgeIntersection {
     edge: LocalEdge,
     point: Coord,
+}
+
+impl EdgeIntersection {
+    pub fn id(&self) -> LocalVertex {
+        match self.edge.iter().sum() {
+            1 => 0,
+            3 => 1,
+            2 => 2,
+            _ => panic!("derp"),
+        }
+    }
 }
 
 #[derive(Debug, PartialEq)]
@@ -150,15 +164,67 @@ impl Plane {
 
 impl Mesh {
     pub fn split_plane(&mut self, plane: Plane) {
-        for mut coords in self.tri_coords() {
-            let tri = [
-                coords.next().unwrap(),
-                coords.next().unwrap(),
-                coords.next().unwrap(),
-            ];
-            let res = plane.tri_intersect(tri);
-            println!("{:?}", tri);
-            println!("{:?}", res);
+        let results: Vec<_> =
+            self.faces
+                .iter()
+                .enumerate()
+                .filter_map(|(face_i, incedent_edge)| {
+                    let mut trav = self.get_traverser(*incedent_edge);
+                    let eid0 = trav.current_edge;
+                    let e0 = trav.get_edge();
+                    let eid1 = trav.next().current_edge;
+                    let e1 = trav.get_edge();
+                    let eid2 = trav.next().current_edge;
+                    let e2 = trav.get_edge();
+
+                    let eids = [eid0, eid1, eid2];
+                    let edges = [e0, e1, e2];
+                    let tri_coords = edges.map(|e| self.verts[e.origin as usize].coord);
+                    let res = plane.tri_intersect(tri_coords);
+                    match res {
+                        v @ (TriIntersection::EdgeEdge(_, _)
+                        | TriIntersection::EdgeCoPoint(_, _)) => Some((v, eids)),
+                        _ => None,
+                    }
+                })
+                .collect();
+
+        //filter twins
+        let mut split_edges: Vec<u32> = Vec::with_capacity(results.len());
+
+        for (res, eids) in results {
+            match res {
+                TriIntersection::EdgeEdge(x1, x2) => {
+                    let id1 = x1.id();
+                    let twin1 = self.half_edges[id1 as usize].twin.unwrap();
+                    let has_id1 = split_edges.contains(&id1) | split_edges.contains(&twin1);
+
+                    if !has_id1 {
+                        self.split_edge(eids[id1 as usize], x1.point);
+                        split_edges.push(twin1);
+                    }
+
+                    let id2 = x2.id();
+                    let twin2 = self.half_edges[id2 as usize].twin.unwrap();
+                    let has_id2 = split_edges.contains(&id2) | split_edges.contains(&twin2);
+
+                    if !has_id2 {
+                        self.split_edge(eids[id2 as usize], x2.point);
+                        split_edges.push(twin2);
+                    }
+                }
+                TriIntersection::EdgeCoPoint(x, _) => {
+                    let id = x.id();
+                    let twin = self.half_edges[id as usize].twin.unwrap();
+                    let has_id = split_edges.contains(&id) | split_edges.contains(&twin);
+
+                    if !has_id {
+                        self.split_edge(eids[id as usize], x.point);
+                        split_edges.push(twin);
+                    }
+                }
+                _ => {}
+            }
         }
     }
 }
