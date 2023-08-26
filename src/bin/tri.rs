@@ -19,7 +19,7 @@ fn main() {
     println!("pre{}", mesh);
     mesh.concave_triangulate();
     println!("post{}", mesh);
-    let tris: Vec<Vec<u32>> = mesh.tri_inds().map(|iter| iter.collect()).collect();
+    let tris: Vec<_> = mesh.tri_inds().collect();
     println!("tri {:?}", tris);
     let edge_count: Vec<_> = mesh.face_edge_count().collect();
     println!("{:#?}", edge_count);
