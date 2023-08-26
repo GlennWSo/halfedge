@@ -21,9 +21,9 @@ impl From<[f64; 3]> for Coord {
     }
 }
 
-impl Into<[f64; 3]> for Coord {
-    fn into(self) -> [f64; 3] {
-        [self.x, self.y, self.z]
+impl From<Coord> for [f64; 3] {
+    fn from(value: Coord) -> Self {
+        [value.x, value.y, value.z]
     }
 }
 
