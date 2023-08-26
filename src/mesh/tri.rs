@@ -70,7 +70,7 @@ impl Mesh {
             targets.push(travler.get_id());
             travler.next();
         }
-        for edge_id in dbg!(targets) {
+        for edge_id in targets {
             self.clip_polygon(edge_id);
         }
     }

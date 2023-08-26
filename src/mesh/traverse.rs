@@ -1,3 +1,5 @@
+use crate::Coord;
+
 use super::{HalfEdge, Mesh};
 use std::iter::Iterator;
 
@@ -54,9 +56,10 @@ impl<'a> Iterator for FaceEdgesIter<'a> {
         if self.traverser.current_edge == self.start_edge {
             self.stop = true;
         }
-        return Some(&self.traverser.get_edge());
+        return Some(self.traverser.get_edge());
     }
 }
+
 pub struct VertexEdgesIter<'a> {
     traverser: MeshTraverser<'a>,
     start_edge: u32,
@@ -75,7 +78,7 @@ impl<'a> Iterator for VertexEdgesIter<'a> {
         if self.traverser.current_edge == self.start_edge {
             self.stop = true;
         }
-        return Some(&self.traverser.get_edge());
+        return Some(self.traverser.get_edge());
     }
 }
 
@@ -110,11 +113,20 @@ impl Mesh {
         self.face_inds().map(|edge_iter| edge_iter.count())
     }
 
-    pub fn tri_inds(&self) -> impl Iterator<Item = impl Iterator<Item = u32> + '_> + '_ {
-        self.faces
-            .iter()
-            .enumerate()
-            .map(|(i, _face)| self.face_edges(i as u32).map(|edge| edge.origin).take(3))
+    pub fn tri_inds(&self) -> impl Iterator<Item = [u32; 3]> + '_ {
+        self.faces.iter().enumerate().map(|(i, _face)| {
+            let mut inds_iter = self.face_edges(i as u32).map(|edge| edge.origin).take(3);
+            [
+                inds_iter.next().expect("atleast 3 vertex per face"),
+                inds_iter.next().expect("atleast 3 vertex per face"),
+                inds_iter.next().expect("atleast 3 vertex per face"),
+            ]
+        })
+    }
+
+    pub fn tri_coords(&self) -> impl Iterator<Item = [Coord; 3]> + '_ {
+        self.tri_inds()
+            .map(|tri_i| tri_i.map(|i| self.verts[i as usize].coord))
     }
 
     /// # gets iterator over half edges around a vertex

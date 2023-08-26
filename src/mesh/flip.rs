@@ -46,7 +46,7 @@ impl Mesh {
             let twin = &mut self.half_edges[twin_id as usize];
             twin.next = twin_prev_id;
             twin.prev = next_id;
-            twin.origin = dbg!(prev_origin);
+            twin.origin = prev_origin;
         }
 
         {

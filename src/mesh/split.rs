@@ -1,15 +1,26 @@
-use super::{HalfEdge, Mesh, Vertex};
+use super::{Coord, HalfEdge, Mesh, Vertex};
 
 impl Mesh {
-    pub fn split_edge(&mut self, edge_id: u32) {
+    /// split_edge with mid point
+    pub fn divide_edge(&mut self, edge_id: u32) {
+        let mut travler = self.get_traverser(edge_id);
+        let id1 = travler.get_edge().origin;
+        let p1 = self.verts[id1 as usize].coord;
+        travler.next();
+        let id2 = travler.get_edge().origin;
+        let p2 = self.verts[id2 as usize].coord;
+        let mid = (p1 + p2) / 2.0;
+        self.divide_edge_at(edge_id, mid);
+    }
+    pub fn divide_edge_at(&mut self, edge_id: u32, coord: Coord) {
         // get all effected ids
-        let travler = self.get_traverser(edge_id);
+        let mut travler = self.get_traverser(edge_id);
         let mut twin_travler = travler.clone();
         let twin_id = twin_travler.twin().get_id();
-        // let twin_next_id = twin_travler.clone().next().get_id();
+        let twin_next_id = twin_travler.next().get_id();
         // let twin_prev_id = twin_travler.prev().get_id();
 
-        // let next_id = travler.clone().next().get_id();
+        let next_id = travler.next().get_id();
         // let prev_id = travler.prev().get_id();
 
         let new_edge_id = self.half_edges.len() as u32;
@@ -18,17 +29,11 @@ impl Mesh {
 
         let edge = &self.half_edges[edge_id as usize];
         let twin = &self.half_edges[twin_id as usize];
-        let origin_id = edge.origin;
-        let twin_origin_id = twin.origin;
 
         // create split point
-        let new_point = {
-            let p1 = &self.verts[origin_id as usize];
-            let p2 = &self.verts[twin_origin_id as usize];
-            Vertex {
-                coord: p1.coord / 2.0 + p2.coord / 2.0,
-                half_edge: new_edge_id,
-            }
+        let new_point = Vertex {
+            coord,
+            half_edge: new_edge_id,
         };
         self.verts.push(new_point);
 
@@ -42,8 +47,12 @@ impl Mesh {
             self.half_edges.push(new_twin);
         }
 
-        //update target edge and twin
+        //update target edge and twin to point to new edges
         self.half_edges[edge_id as usize].next = new_edge_id;
         self.half_edges[twin_id as usize].next = new_twin_id;
+
+        // update old nexts.prev
+        self.half_edges[next_id as usize].prev = new_edge_id;
+        self.half_edges[twin_next_id as usize].prev = new_twin_id;
     }
 }

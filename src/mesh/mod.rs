@@ -8,14 +8,15 @@ mod traverse;
 mod tri;
 
 // use std::fmt;
-pub use point::Point;
+pub use plane::Plane;
+pub use point::Coord;
 use std::iter;
 
 // type Point = [f64; 3];
 
 #[derive(Debug, Clone)]
 pub struct Vertex {
-    pub coord: Point,
+    pub coord: Coord,
     half_edge: u32,
 }
 
@@ -64,7 +65,7 @@ impl From<[u32; 5]> for HalfEdge {
 
 #[derive(Clone, Debug)]
 pub struct Mesh {
-    verts: Verts,
+    pub verts: Verts, // TODO make private
     faces: Faces,
     half_edges: HalfEdges,
 }
@@ -83,7 +84,7 @@ impl Mesh {
 
 /// # construct new Self
 impl Mesh {
-    pub fn from_verts_faces(points: Vec<Point>, face_list: FaceList) -> Self {
+    pub fn from_verts_faces(points: Vec<Coord>, face_list: FaceList) -> Self {
         let mut half_edges: Vec<HalfEdge> = Vec::new();
         let mut faces = Vec::with_capacity(face_list.len());
 
