@@ -74,7 +74,7 @@ impl<'a> Coord {
     /// normalize inplace and return the norm
     pub fn normalize(&mut self) -> f64 {
         let norm = self.norm();
-        self / norm;
+        self.div_inplace(norm);
         norm
     }
 }
@@ -142,10 +142,8 @@ impl Mul<Coord> for Coord {
     }
 }
 
-impl Div<f64> for &mut Coord {
-    type Output = ();
-
-    fn div(self, rhs: f64) -> Self::Output {
+impl Coord {
+    fn div_inplace(&mut self, rhs: f64) {
         self.x /= rhs;
         self.y /= rhs;
         self.z /= rhs;
