@@ -194,7 +194,7 @@ impl Mesh {
         }
 
         //filter twins
-        let mut split_edges: Vec<u32> = Vec::with_capacity(dbg!(results.len()));
+        let mut split_edges: Vec<u32> = Vec::with_capacity(results.len());
 
         for (res, eids) in results {
             match res {
@@ -206,8 +206,6 @@ impl Mesh {
                     if !has_id1 {
                         self.divide_edge_at(id1, x1.point);
                         split_edges.push(twin1);
-                    } else {
-                        println!("edge {} already split", id1);
                     }
 
                     let id2 = eids[x2.id() as usize];
@@ -217,8 +215,6 @@ impl Mesh {
                     if !has_id2 {
                         self.divide_edge_at(id2, x2.point);
                         split_edges.push(twin2);
-                    } else {
-                        println!("edge {} already split", id2);
                     }
                 }
                 TriIntersection::EdgeCoPoint(x, _) => {
