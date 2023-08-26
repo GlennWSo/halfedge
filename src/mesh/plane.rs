@@ -204,7 +204,7 @@ impl Mesh {
                     let has_id1 = split_edges.contains(&id1) | split_edges.contains(&twin1);
 
                     if !has_id1 {
-                        self.split_edge(id1, x1.point);
+                        self.divide_edge_at(id1, x1.point);
                         split_edges.push(twin1);
                     } else {
                         println!("edge {} already split", id1);
@@ -215,7 +215,7 @@ impl Mesh {
                     let has_id2 = split_edges.contains(&id2) | split_edges.contains(&twin2);
 
                     if !has_id2 {
-                        self.split_edge(id2, x2.point);
+                        self.divide_edge_at(id2, x2.point);
                         split_edges.push(twin2);
                     } else {
                         println!("edge {} already split", id2);
@@ -227,7 +227,7 @@ impl Mesh {
                     let has_id = split_edges.contains(&id) | split_edges.contains(&twin);
 
                     if !has_id {
-                        self.split_edge(eids[id as usize], x.point);
+                        self.divide_edge_at(eids[id as usize], x.point);
                         split_edges.push(twin);
                     }
                 }

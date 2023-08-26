@@ -10,9 +10,9 @@ impl Mesh {
         let id2 = travler.get_edge().origin;
         let p2 = self.verts[id2 as usize].coord;
         let mid = (p1 + p2) / 2.0;
-        self.split_edge(edge_id, mid);
+        self.divide_edge_at(edge_id, mid);
     }
-    pub fn split_edge(&mut self, edge_id: u32, coord: Coord) {
+    pub fn divide_edge_at(&mut self, edge_id: u32, coord: Coord) {
         // get all effected ids
         let mut travler = self.get_traverser(edge_id);
         let mut twin_travler = travler.clone();
