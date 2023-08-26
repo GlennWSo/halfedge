@@ -7,7 +7,7 @@ fn main() {
 
     let mut mesh2 = mesh1.clone();
     let plane = Plane::new([0.5, 0.5, 0.5].into(), [1.0, 0.0, 0.0].into());
-    mesh2.split_plane(plane);
+    mesh2.sub_divide_plane(plane);
     mesh2.concave_triangulate();
     println!("{}", mesh2);
     println!("{}", mesh2.pretty_face_vecs());

@@ -160,7 +160,7 @@ impl Plane {
 }
 
 impl Mesh {
-    pub fn split_plane(&mut self, plane: Plane) {
+    pub fn sub_divide_plane(&mut self, plane: Plane) {
         let results: Vec<_> =
             self.faces
                 .iter()
