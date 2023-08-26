@@ -11,6 +11,17 @@ impl Mesh {
         Mesh::from_verts_faces(points, faces)
     }
 
+    pub fn unit_square() -> Self {
+        let points = vec![
+            [0.0, 0.0, 0.0].into(),
+            [1.0, 0.0, 0.0].into(),
+            [1.0, 1.0, 0.0].into(),
+            [0.0, 1.0, 0.0].into(),
+        ];
+        let faces = vec![vec![0, 1, 2, 3]];
+        Mesh::from_verts_faces(points, faces)
+    }
+
     pub fn unit_cube() -> Self {
         let points = vec![
             [0.0, 0.0, 0.0].into(),
@@ -31,7 +42,6 @@ impl Mesh {
             vec![4, 5, 6, 7],
         ];
 
-        let mesh = Mesh::from_verts_faces(points, faces);
-        mesh
+        Mesh::from_verts_faces(points, faces)
     }
 }
