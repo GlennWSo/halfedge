@@ -14,13 +14,13 @@ impl Mesh {
     }
     pub fn split_edge(&mut self, edge_id: u32, coord: Coord) {
         // get all effected ids
-        let travler = self.get_traverser(edge_id);
+        let mut travler = self.get_traverser(edge_id);
         let mut twin_travler = travler.clone();
         let twin_id = twin_travler.twin().get_id();
-        // let twin_next_id = twin_travler.clone().next().get_id();
+        let twin_next_id = twin_travler.next().get_id();
         // let twin_prev_id = twin_travler.prev().get_id();
 
-        // let next_id = travler.clone().next().get_id();
+        let next_id = travler.next().get_id();
         // let prev_id = travler.prev().get_id();
 
         let new_edge_id = self.half_edges.len() as u32;
@@ -47,8 +47,12 @@ impl Mesh {
             self.half_edges.push(new_twin);
         }
 
-        //update target edge and twin
+        //update target edge and twin to point to new edges
         self.half_edges[edge_id as usize].next = new_edge_id;
         self.half_edges[twin_id as usize].next = new_twin_id;
+
+        // update old nexts.prev
+        self.half_edges[next_id as usize].prev = new_edge_id;
+        self.half_edges[twin_next_id as usize].prev = new_twin_id;
     }
 }
