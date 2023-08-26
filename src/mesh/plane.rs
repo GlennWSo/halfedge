@@ -1,7 +1,4 @@
-use crate::{
-    mesh::{traverse, HalfEdge},
-    Coord, Mesh,
-};
+use crate::{Coord, Mesh};
 
 pub struct Plane {
     origin: Coord,
@@ -167,8 +164,7 @@ impl Mesh {
         let results: Vec<_> =
             self.faces
                 .iter()
-                .enumerate()
-                .filter_map(|(face_i, incedent_edge)| {
+                .filter_map(|incedent_edge| {
                     let mut trav = self.get_traverser(*incedent_edge);
                     let eid0 = trav.current_edge;
                     let e0 = trav.get_edge();

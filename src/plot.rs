@@ -47,10 +47,10 @@ impl WireFrame {
             },
         );
         model_material.render_states.cull = Cull::Back;
-        let model = Gm::new(GPUMesh::new(&context, &mesh), model_material);
+        let model = Gm::new(GPUMesh::new(context, &mesh), model_material);
 
         let mut wireframe_material = PhysicalMaterial::new_opaque(
-            &context,
+            context,
             &CpuMaterial {
                 albedo: Color::new_opaque(220, 50, 50),
                 roughness: 0.7,
@@ -65,14 +65,14 @@ impl WireFrame {
             cylinder
                 .transform(&Mat4::from_nonuniform_scale(1.0, 0.007, 0.007))
                 .unwrap();
-            let imesh = InstancedMesh::new(&context, &edge_transformations(&mesh), &cylinder);
+            let imesh = InstancedMesh::new(context, &edge_transformations(&mesh), &cylinder);
             Gm::new(imesh, wireframe_material.clone())
         };
 
         let vertices = {
             let mut sphere = CpuMesh::sphere(8);
             sphere.transform(&Mat4::from_scale(0.015)).unwrap();
-            let imesh = InstancedMesh::new(&context, &vertex_transformations(&mesh), &sphere);
+            let imesh = InstancedMesh::new(context, &vertex_transformations(&mesh), &sphere);
             Gm::new(imesh, wireframe_material)
         };
         WireFrame {
@@ -83,16 +83,15 @@ impl WireFrame {
     }
 }
 
-impl Into<Vector3<f64>> for Coord {
-    fn into(self) -> Vector3<f64> {
-        Vector3::new(self.x, self.y, self.z)
+impl From<Coord> for Vector3<f64> {
+    fn from(value: Coord) -> Self {
+        Vector3::new(value.x, value.y, value.z)
     }
 }
-
-impl Into<CpuMesh> for Mesh {
-    fn into(self) -> CpuMesh {
-        let positions = Positions::F64(self.verts().iter().map(|v| v.coord.into()).collect());
-        let indices = Indices::U32(self.tri_inds().flatten().collect());
+impl From<Mesh> for CpuMesh {
+    fn from(mesh: Mesh) -> Self {
+        let positions = Positions::F64(mesh.verts().iter().map(|v| v.coord.into()).collect());
+        let indices = Indices::U32(mesh.tri_inds().flatten().collect());
         let mut mesh = CpuMesh {
             positions,
             indices,
@@ -102,6 +101,20 @@ impl Into<CpuMesh> for Mesh {
         mesh
     }
 }
+
+// impl Into<CpuMesh> for Mesh {
+//     fn into(self) -> CpuMesh {
+//         let positions = Positions::F64(self.verts().iter().map(|v| v.coord.into()).collect());
+//         let indices = Indices::U32(self.tri_inds().flatten().collect());
+//         let mut mesh = CpuMesh {
+//             positions,
+//             indices,
+//             ..Default::default()
+//         };
+//         mesh.compute_normals();
+//         mesh
+//     }
+// }
 
 impl Mesh {
     pub fn plot(self) -> ! {
@@ -329,7 +342,7 @@ pub fn vertex_transformations(cpu_mesh: &CpuMesh) -> Instances {
             .positions
             .to_f32()
             .into_iter()
-            .map(|p| Mat4::from_translation(p))
+            .map(Mat4::from_translation)
             .collect(),
         ..Default::default()
     }

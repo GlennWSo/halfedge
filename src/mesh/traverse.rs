@@ -56,7 +56,7 @@ impl<'a> Iterator for FaceEdgesIter<'a> {
         if self.traverser.current_edge == self.start_edge {
             self.stop = true;
         }
-        return Some(&self.traverser.get_edge());
+        return Some(self.traverser.get_edge());
     }
 }
 
@@ -78,7 +78,7 @@ impl<'a> Iterator for VertexEdgesIter<'a> {
         if self.traverser.current_edge == self.start_edge {
             self.stop = true;
         }
-        return Some(&self.traverser.get_edge());
+        return Some(self.traverser.get_edge());
     }
 }
 
