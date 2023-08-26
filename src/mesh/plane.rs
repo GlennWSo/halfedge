@@ -185,28 +185,40 @@ impl Mesh {
                 })
                 .collect();
 
+        for res in results.iter() {
+            match res {
+                (TriIntersection::EdgeEdge(_, _), v) => println!("EdgeEdge {:?}", v),
+                (TriIntersection::EdgeCoPoint(_, _), v) => println!("Edge {:?}", v),
+                _ => println!("None"),
+            };
+        }
+
         //filter twins
-        let mut split_edges: Vec<u32> = Vec::with_capacity(results.len());
+        let mut split_edges: Vec<u32> = Vec::with_capacity(dbg!(results.len()));
 
         for (res, eids) in results {
             match res {
                 TriIntersection::EdgeEdge(x1, x2) => {
-                    let id1 = x1.id();
+                    let id1 = eids[x1.id() as usize];
                     let twin1 = self.half_edges[id1 as usize].twin.unwrap();
                     let has_id1 = split_edges.contains(&id1) | split_edges.contains(&twin1);
 
                     if !has_id1 {
-                        self.split_edge(eids[id1 as usize], x1.point);
+                        self.split_edge(id1, x1.point);
                         split_edges.push(twin1);
+                    } else {
+                        println!("edge {} already split", id1);
                     }
 
-                    let id2 = x2.id();
+                    let id2 = eids[x2.id() as usize];
                     let twin2 = self.half_edges[id2 as usize].twin.unwrap();
                     let has_id2 = split_edges.contains(&id2) | split_edges.contains(&twin2);
 
                     if !has_id2 {
-                        self.split_edge(eids[id2 as usize], x2.point);
+                        self.split_edge(id2, x2.point);
                         split_edges.push(twin2);
+                    } else {
+                        println!("edge {} already split", id2);
                     }
                 }
                 TriIntersection::EdgeCoPoint(x, _) => {
@@ -222,6 +234,7 @@ impl Mesh {
                 _ => {}
             }
         }
+        dbg!(split_edges);
     }
 }
 
