@@ -77,6 +77,11 @@ impl Mesh {
         }
     }
 
+    pub fn triangulate(&mut self) {
+        for face in 0..self.faces.len() {
+            self.ear_clip(face as u32);
+        }
+    }
     pub fn ear_clip(&mut self, face: u32) {
         let edge_iter = self.face_edges(face);
         let edge_count = edge_iter.clone().count();
