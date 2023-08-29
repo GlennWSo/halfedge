@@ -11,6 +11,7 @@ pub struct PointIter {
     point: Coord,
     index: u8,
 }
+
 impl From<[f64; 3]> for Coord {
     fn from(value: [f64; 3]) -> Self {
         Self {
@@ -24,6 +25,12 @@ impl From<[f64; 3]> for Coord {
 impl From<Coord> for [f64; 3] {
     fn from(value: Coord) -> Self {
         [value.x, value.y, value.z]
+    }
+}
+
+impl Coord {
+    pub fn new(x: f64, y: f64, z: f64) -> Self {
+        Self { x, y, z }
     }
 }
 
@@ -65,6 +72,13 @@ impl<'a> Coord {
     pub fn dot(self, rhs: Coord) -> f64 {
         let prod = self * rhs;
         prod.into_iter().sum()
+    }
+
+    pub fn cross(self, rhs: Coord) -> Coord {
+        let x = self.y * rhs.z - self.z * rhs.y;
+        let y = self.z * rhs.x - self.x * rhs.z;
+        let z = self.x * rhs.y - self.y * rhs.x;
+        Self::new(x, y, z)
     }
 
     pub fn norm(self) -> f64 {

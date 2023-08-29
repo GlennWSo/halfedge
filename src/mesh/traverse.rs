@@ -38,8 +38,9 @@ impl<'a> MeshTraverser<'a> {
     }
 }
 
+#[derive(Clone)]
 pub struct FaceEdgesIter<'a> {
-    traverser: MeshTraverser<'a>,
+    pub traverser: MeshTraverser<'a>,
     start_edge: u32,
     stop: bool,
 }
