@@ -67,7 +67,7 @@ pub struct VertexEdgesIter<'a> {
     stop: bool,
 }
 impl<'a> Iterator for VertexEdgesIter<'a> {
-    type Item = &'a HalfEdge;
+    type Item = u32;
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.stop {
@@ -79,7 +79,7 @@ impl<'a> Iterator for VertexEdgesIter<'a> {
         if self.traverser.current_edge == self.start_edge {
             self.stop = true;
         }
-        return Some(self.traverser.get_edge());
+        return Some(self.traverser.get_id());
     }
 }
 

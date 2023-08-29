@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 use crate::{Coord, Mesh};
 
 pub struct Plane {
@@ -160,7 +162,46 @@ impl Plane {
 }
 
 impl Mesh {
-    pub fn sub_divide_plane(&mut self, plane: Plane) {
+    pub fn trim_plane(&mut self, plane: &Plane) {
+        self.sub_divide_plane(plane);
+        self.triangulate();
+        let losers = self.verts.iter().enumerate().filter_map(|(i, v)| {
+            if plane.dist(v.coord) < 0. {
+                Some(i as u32)
+            } else {
+                None
+            }
+        });
+        println!("{}", self);
+        self.drop_verts(losers.collect());
+    }
+    fn drop_verts(&mut self, mut verts: Vec<u32>) {
+        let mut edges = HashSet::with_capacity(verts.len() * 3);
+        let iter = verts.iter().map(|v| self.vertex_edges(*v)).flatten();
+        edges.extend(iter);
+        println!("derp: {:?}", edges);
+        let mut faces = HashSet::with_capacity(verts.len() * 2);
+        faces.extend(
+            edges
+                .iter()
+                .filter_map(|e| self.half_edges[*e as usize].face),
+        );
+        verts.sort_unstable();
+        // for v in dbg!(verts) {
+        //     self.verts.remove(v as usize);
+        // }
+        for idx in (0..self.faces.len()).rev() {
+            if faces.contains(&(idx as u32)) {
+                self.faces.remove(idx);
+            }
+        }
+        // for idx in (0..self.half_edges.len()).rev() {
+        //     if edges.contains(&(idx as u32)) {
+        //         self.half_edges.remove(idx);
+        //     }
+        // }
+    }
+    pub fn sub_divide_plane(&mut self, plane: &Plane) {
         let results: Vec<_> =
             self.faces
                 .iter()
