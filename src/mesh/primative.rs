@@ -1,6 +1,26 @@
 use super::Mesh;
 
 impl Mesh {
+    pub fn star() -> Mesh {
+        let mut points = vec![
+            [-1.0, -1.0, 0.0].into(),
+            [0.0, -1.0, 0.0].into(),
+            [1.0, -1.0, 0.0].into(),
+            [1.0, 0.0, 0.0].into(),
+            [1.0, 1.0, 0.0].into(),
+            [0.0, 1.0, 0.0].into(),
+            [-1.0, 1.0, 0.0].into(),
+            [-1.0, 0.0, 0.0].into(),
+        ];
+        for i in (1..points.len()).step_by(2) {
+            points[i] = points[i] * 0.3;
+        }
+        let face1 = (0..points.len()).map(|n| n as u32).collect();
+
+        let faces = vec![face1];
+
+        Mesh::from_verts_faces(points, faces)
+    }
     pub fn unit_triangle() -> Self {
         let points = vec![
             [0.0, 0.0, 0.0].into(),

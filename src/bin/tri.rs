@@ -1,38 +1,6 @@
 use halfedge::plot::show_wireframes;
 use halfedge::Mesh;
 
-fn star() -> Mesh {
-    let mut points = vec![
-        [-1.0, -1.0, 0.0].into(),
-        [0.0, -1.0, 0.0].into(),
-        [1.0, -1.0, 0.0].into(),
-        [1.0, 0.0, 0.0].into(),
-        [1.0, 1.0, 0.0].into(),
-        [0.0, 1.0, 0.0].into(),
-        [-1.0, 1.0, 0.0].into(),
-        [-1.0, 0.0, 0.0].into(),
-    ];
-    for i in (1..points.len()).step_by(2) {
-        points[i] = points[i] * 0.3;
-    }
-    let face1 = (0..points.len()).map(|n| n as u32).collect();
-
-    let faces = vec![face1];
-
-    Mesh::from_verts_faces(points, faces)
-}
-fn banana() -> Mesh {
-    let points = vec![
-        [0.0, 0.0, 0.0].into(),
-        [1.0, 0.0, 0.0].into(),
-        [0.2, 0.2, 0.0].into(),
-        [0.0, 1.0, 0.0].into(),
-    ];
-    let faces = vec![vec![0, 1, 2, 3]];
-
-    Mesh::from_verts_faces(points, faces)
-}
-
 fn edge_case() -> Mesh {
     let points = vec![
         [0.0, 0.0, 0.0].into(),

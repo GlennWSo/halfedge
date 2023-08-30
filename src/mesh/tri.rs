@@ -240,7 +240,7 @@ mod test_mesh_triangulation {
             [0.2, 0.2, 0.0].into(),
             [0.0, 1.0, 0.0].into(),
         ];
-        let faces = vec![vec![0, 1, 2, 3, 4]];
+        let faces = vec![vec![0, 1, 2, 3]];
         let mesh = Mesh::from_verts_faces(points, faces);
     }
 }

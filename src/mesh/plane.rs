@@ -177,7 +177,7 @@ impl Mesh {
     }
     fn drop_verts(&mut self, mut verts: Vec<u32>) {
         let mut edges = HashSet::with_capacity(verts.len() * 3);
-        let iter = verts.iter().map(|v| self.vertex_edges(*v)).flatten();
+        let iter = verts.iter().flat_map(|v| self.vertex_edges(*v));
         edges.extend(iter);
         println!("derp: {:?}", edges);
         let mut faces = HashSet::with_capacity(verts.len() * 2);
